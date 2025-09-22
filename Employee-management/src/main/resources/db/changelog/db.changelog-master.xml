@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <include file="changes/001-create-employee-table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/002-create-department-table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/003-create-project-table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/004-create-task-table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/005-create-employee-project-join-table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/006-add-foreign-key-constraints.xml" relativeToChangelogFile="true"/>
+    <include file="changes/007-add-department-fk-to-employee.xml" relativeToChangelogFile="true"/>
+
+</databaseChangeLog>
