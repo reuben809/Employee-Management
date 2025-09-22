@@ -3,6 +3,7 @@ package com.example.Employee_management.controller;
 import com.example.Employee_management.dto.DepartmentRequest;
 import com.example.Employee_management.dto.DepartmentResponse;
 import com.example.Employee_management.service.DepartmentService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/departments")
+@Tag(name = "Departments-Controller" , description = "The Department Endpoints are present here.")
 public class DepartmentController {
 
     private final DepartmentService departmentService;

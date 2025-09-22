@@ -138,6 +138,6 @@ public class EmployeeServiceImpl implements EmployeeService {
             return departmentRepository.findByName(name)
                     .orElseThrow(() -> new EntityNotFoundException("Department not found with name: " + name));
         }
-        return null; // No department info was provided
+        return null;
     }
 }

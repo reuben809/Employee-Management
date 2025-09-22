@@ -3,6 +3,7 @@ package com.example.Employee_management.controller;
 import com.example.Employee_management.dto.ProjectRequest;
 import com.example.Employee_management.dto.ProjectResponse;
 import com.example.Employee_management.service.ProjectService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +11,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/projects")
+@Tag(name = "Project-Controller" , description = "The Project Endpoints are present here.")
 public class ProjectController {
 
     private final ProjectService projectService;

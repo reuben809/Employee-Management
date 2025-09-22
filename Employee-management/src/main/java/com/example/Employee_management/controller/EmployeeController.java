@@ -3,7 +3,9 @@ package com.example.Employee_management.controller;
 import com.example.Employee_management.dto.EmployeePersonalInfoRequest;
 import com.example.Employee_management.dto.EmployeeRequest;
 import com.example.Employee_management.dto.EmployeeResponse;
+import com.example.Employee_management.dto.EmployeeSearchRequest;
 import com.example.Employee_management.service.EmployeeService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +14,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/employees")
+@Tag(name = "Employee-Controller" , description = "The Employee Endpoints are present here.")
 public class EmployeeController {
 
     private final EmployeeService employeeService;
@@ -52,5 +55,10 @@ public class EmployeeController {
     public ResponseEntity<Void> deleteEmployee(@PathVariable UUID id) {
         employeeService.deleteEmployee(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<List<EmployeeResponse>> searchEmployees(@RequestBody EmployeeSearchRequest request) {
+        return ResponseEntity.ok(employeeService.searchEmployees(request));
     }
 }
