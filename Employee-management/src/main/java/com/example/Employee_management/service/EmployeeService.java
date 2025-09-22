@@ -1,8 +1,8 @@
 package com.example.Employee_management.service;
 
-import com.example.Employee_management.dto.EmployeePersonalInfoRequest;
-import com.example.Employee_management.dto.EmployeeRequest;
-import com.example.Employee_management.dto.EmployeeResponse;
+import com.example.Employee_management.dto.*;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -14,4 +14,7 @@ public interface EmployeeService {
     void deleteEmployee(UUID id);
 
     EmployeeResponse updateEmployeePersonalInfo(UUID employeeId, EmployeePersonalInfoRequest request);
+
+    @Transactional(readOnly = true)
+    List<EmployeeResponse> searchEmployees(EmployeeSearchRequest request);
 }
