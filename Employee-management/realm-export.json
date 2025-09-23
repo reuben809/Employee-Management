@@ -1,0 +1,24 @@
+{
+  "realm": "employee-realm",
+  "enabled": true,
+  "roles": {
+    "realm": [
+      {"name": "DIRECTOR", "description": "Full access to the system"},
+      {"name": "MANAGER", "description": "Can manage employees in their department"},
+      {"name": "EMPLOYEE", "description": "Standard employee access"},
+      {"name": "DEVELOPER", "description": "A developer role"},
+      {"name": "TESTER", "description": "A tester role"},
+      {"name": "HR", "description": "An HR role"}
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "employee-management-client",
+      "secret": "Nasg6J8u3TrHiTcV7Ztb60XiLfegzVXP",
+      "publicClient": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "redirectUris": ["http://localhost:8080/*"]
+    }
+  ]
+}

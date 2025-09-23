@@ -8,6 +8,8 @@ import com.example.Employee_management.repository.DepartmentRepository;
 import com.example.Employee_management.repository.EmployeeRepository;
 import com.example.Employee_management.repository.specification.EmployeeSpecification;
 import jakarta.persistence.EntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -18,17 +20,20 @@ import java.util.stream.Collectors;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
+    private static final Logger logger = LoggerFactory.getLogger(EmployeeServiceImpl.class);
 
     private final EmployeeRepository employeeRepository;
     private final DepartmentRepository departmentRepository;
     private final EmployeeSpecification employeeSpecification;
+    private final KeycloakAdminClientService keycloakAdminClientService;
 
 
     // <-- CHANGE: Update constructor to accept DepartmentRepository
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository, DepartmentRepository departmentRepository, EmployeeSpecification employeeSpecification) {
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository, DepartmentRepository departmentRepository, EmployeeSpecification employeeSpecification, KeycloakAdminClientService keycloakAdminClientService) {
         this.employeeRepository = employeeRepository;
         this.departmentRepository = departmentRepository;
         this.employeeSpecification = new EmployeeSpecification();
+        this.keycloakAdminClientService = keycloakAdminClientService;
     }
 
     @Override
@@ -48,6 +53,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setDepartment(department);
 
         Employee savedEmployee = employeeRepository.save(employee);
+        try {
+            keycloakAdminClientService.createKeycloakUser(savedEmployee);
+        }catch (Exception e){
+            logger.error("Failed to create Keycloak user for employeeId: {}. Rolling back transaction.", savedEmployee.getId(), e);
+            throw new RuntimeException("Failed to create Keycloak user for employeeId: " + savedEmployee.getId(), e);
+
+        }
         return EmployeeMapper.toResponse(savedEmployee);
     }
 
@@ -95,10 +107,21 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public void deleteEmployee(UUID id) {
-        if (!employeeRepository.existsById(id)) {
-            throw new EntityNotFoundException("Employee not found with ID: " + id);
+        Employee employeeToDelete = employeeRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Employee not found with ID: " + id));
+
+        // 2. Attempt to delete the user from Keycloak.
+        try {
+            keycloakAdminClientService.deleteKeycloakUser(employeeToDelete.getEmail());
+        } catch (Exception e) {
+            // Log the error but allow the process to continue.
+            // This prevents a Keycloak issue from blocking the deletion of the local record.
+            logger.error("Could not delete user from Keycloak: {}. The local employee record will still be deleted.", employeeToDelete.getEmail(), e);
         }
+
+        // 3. Delete the employee from the local database.
         employeeRepository.deleteById(id);
+
     }
 
     // <-- CHANGE: New method implementation for personal info updates
