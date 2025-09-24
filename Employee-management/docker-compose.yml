@@ -2,7 +2,7 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:18.0
     container_name: keycloak_service
-    command: ['start-dev']
+    command: ['start-dev', '--import-realm']
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
@@ -11,6 +11,7 @@ services:
     ports:
       - "8180:8080"
     volumes:
+      - ./realm-export.json:/opt/keycloak/data/import/realm-export.json
       - keycloak_data:/opt/keycloak/data
     networks:
       - employee-net
